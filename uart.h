@@ -7,7 +7,7 @@ Title:    Interrupt UART library with receive/transmit circular buffers
 Author:   Andy Gock
 Software: AVR-GCC 4.1, AVR Libc 1.4
 Hardware: any AVR with built-in UART, tested on AT90S8515 & ATmega8 at 4 Mhz
-License:  GNU General Public License 
+License:  GNU General Public License
 Usage:    see Doxygen manual
 
 Based on original library by Peter Fluery, Tim Sharpe, Nicholas Zambetti.
@@ -39,12 +39,12 @@ LICENSE:
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
 ************************************************************************/
 
 /************************************************************************
 uart_available, uart_flush, uart1_available, and uart1_flush functions
-were adapted from the Arduino HardwareSerial.h library by Tim Sharpe on 
+were adapted from the Arduino HardwareSerial.h library by Tim Sharpe on
 11 Jan 2009.  The license info for HardwareSerial.h is as follows:
 
   HardwareSerial.h - Hardware serial library for Wiring
@@ -67,7 +67,7 @@ were adapted from the Arduino HardwareSerial.h library by Tim Sharpe on
 
 /************************************************************************
 Changelog for modifications made by Tim Sharpe, starting with the current
-  library version on his Web site as of 05/01/2009. 
+  library version on his Web site as of 05/01/2009.
 
 Date        Description
 =========================================================================
@@ -79,13 +79,13 @@ Date        Description
 
 ************************************************************************/
 
-/** 
+/**
  *  @defgroup avr-uart UART Library
  *  @code #include <uart.h> @endcode
- * 
- *  @brief Interrupt UART library using the built-in UART with transmit and receive circular buffers. 
  *
- *  This library can be used to transmit and receive data through the built in UART. 
+ *  @brief Interrupt UART library using the built-in UART with transmit and receive circular buffers.
+ *
+ *  This library can be used to transmit and receive data through the built in UART.
  *
  *  An interrupt is generated when the UART has finished transmitting or
  *  receiving a byte. The interrupt handling routines use circular buffers
@@ -100,7 +100,7 @@ Date        Description
  *  @author Andy Gock <andy@gock.net>
  *  @note Based on original library by Peter Fleury and Tim Sharpe.
  */
- 
+
 /**@{*/
 #include <stdint.h>
 #include <avr/io.h>
@@ -116,7 +116,7 @@ Date        Description
 /* Enable USART 1, 2, 3 as required */
 #define USART0_ENABLED
 //#define USART1_ENABLED
-//#define USART2_ENABLED 
+//#define USART2_ENABLED
 //#define USART3_ENABLED
 
 /* Set size of receive and transmit buffers */
@@ -184,14 +184,14 @@ Date        Description
 #endif
 
 /** @brief  UART Baudrate Expression
- *  @param  xtalCpu  system clock in Mhz, e.g. 4000000L for 4Mhz          
- *  @param  baudRate baudrate in bps, e.g. 1200, 2400, 9600     
+ *  @param  xtalCpu  system clock in Mhz, e.g. 4000000L for 4Mhz
+ *  @param  baudRate baudrate in bps, e.g. 1200, 2400, 9600
  */
 #define UART_BAUD_SELECT(baudRate,xtalCpu) (((xtalCpu)+8UL*(baudRate))/(16UL*(baudRate))-1UL)
 
 /** @brief  UART Baudrate Expression for ATmega double speed mode
- *  @param  xtalCpu  system clock in Mhz, e.g. 4000000L for 4Mhz           
- *  @param  baudRate baudrate in bps, e.g. 1200, 2400, 9600     
+ *  @param  xtalCpu  system clock in Mhz, e.g. 4000000L for 4Mhz
+ *  @param  baudRate baudrate in bps, e.g. 1200, 2400, 9600
  */
 #define UART_BAUD_SELECT_DOUBLE_SPEED(baudRate,xtalCpu) ((((xtalCpu)+4UL*(baudRate))/(8UL*(baudRate))-1)|0x8000)
 
@@ -213,7 +213,7 @@ Date        Description
 #error "size of UART_RX3_BUFFER_SIZE + UART_TX3_BUFFER_SIZE larger than size of SRAM"
 #endif
 
-/* 
+/*
 ** high byte error return code of uart_getc()
 */
 #define UART_FRAME_ERROR      0x0800              /**< Framing Error by UART       */
@@ -224,6 +224,7 @@ Date        Description
 /* Macros, to allow use of legacy names */
 
 #define uart_init(b)      uart0_init(b)
+#define uart_setRxHandler(f)  uart0_setRxHandler(f)
 #define uart_getc()       uart0_getc()
 #define uart_putc(d)      uart0_putc(d)
 #define uart_puts(s)      uart0_puts(s)
@@ -236,35 +237,41 @@ Date        Description
 */
 
 /**
-   @brief   Initialize UART and set baudrate 
+   @brief   Initialize UART and set baudrate
    @param   baudrate Specify baudrate using macro UART_BAUD_SELECT()
    @return  none
 */
 extern void uart0_init(uint16_t baudrate);
 
+/**
+   @brief   Set additional interrupt handler function
+   @param   handler function
+   @return  none
+*/
+extern void uart0_setRxHandler(void (*func)(uint8_t data, uint8_t lastRxError));
 
 /**
  *  @brief   Get received byte from ringbuffer
  *
- * Returns in the lower byte the received character and in the 
+ * Returns in the lower byte the received character and in the
  * higher byte the last receive error.
  * UART_NO_DATA is returned when no data is available.
  *
  *  @return  lower byte:  received byte from ringbuffer
  *  @return  higher byte: last receive status
  *           - \b 0 successfully received data from UART
- *           - \b UART_NO_DATA           
+ *           - \b UART_NO_DATA
  *             <br>no receive data available
- *           - \b UART_BUFFER_OVERFLOW   
+ *           - \b UART_BUFFER_OVERFLOW
  *             <br>Receive ringbuffer overflow.
- *             We are not reading the receive buffer fast enough, 
- *             one or more received character have been dropped 
- *           - \b UART_OVERRUN_ERROR     
+ *             We are not reading the receive buffer fast enough,
+ *             one or more received character have been dropped
+ *           - \b UART_OVERRUN_ERROR
  *             <br>Overrun condition by UART.
- *             A character already present in the UART UDR register was 
+ *             A character already present in the UART UDR register was
  *             not read by the interrupt handler before the next character arrived,
  *             one or more received characters have been dropped.
- *           - \b UART_FRAME_ERROR       
+ *           - \b UART_FRAME_ERROR
  *             <br>Framing Error by UART
  */
 extern uint16_t uart0_getc(void);
@@ -281,18 +288,18 @@ extern uint16_t uart0_getc(void);
  *  @return  lower byte:  next byte in ringbuffer
  *  @return  higher byte: last receive status
  *           - \b 0 successfully received data from UART
- *           - \b UART_NO_DATA           
+ *           - \b UART_NO_DATA
  *             <br>no receive data available
- *           - \b UART_BUFFER_OVERFLOW   
+ *           - \b UART_BUFFER_OVERFLOW
  *             <br>Receive ringbuffer overflow.
- *             We are not reading the receive buffer fast enough, 
- *             one or more received character have been dropped 
- *           - \b UART_OVERRUN_ERROR     
+ *             We are not reading the receive buffer fast enough,
+ *             one or more received character have been dropped
+ *           - \b UART_OVERRUN_ERROR
  *             <br>Overrun condition by UART.
- *             A character already present in the UART UDR register was 
+ *             A character already present in the UART UDR register was
  *             not read by the interrupt handler before the next character arrived,
  *             one or more received characters have been dropped.
- *           - \b UART_FRAME_ERROR       
+ *           - \b UART_FRAME_ERROR
  *             <br>Framing Error by UART
  */
 extern uint16_t uart0_peek(void);
@@ -311,7 +318,7 @@ extern void uart0_putc(uint8_t data);
  *  The string is buffered by the uart library in a circular buffer
  *  and one character at a time is transmitted to the UART using interrupts.
  *  Blocks if it can not write the whole string into the circular buffer.
- * 
+ *
  *  @param   s string to be transmitted
  *  @return  none
  */
@@ -352,6 +359,8 @@ extern void uart0_flush(void);
 
 /** @brief  Initialize USART1 (only available on selected ATmegas) @see uart_init */
 extern void uart1_init(uint16_t baudrate);
+/** @brief  Set UART1 additional rx interrupt handler @see uart_setRxHandler */
+extern void uart1_setRxHandler(void (*func)(uint8_t data, uint8_t lastRxError));
 /** @brief  Get received byte of USART1 from ringbuffer. (only available on selected ATmega) @see uart_getc */
 extern uint16_t uart1_getc(void);
 /** @brief  Peek at next byte in USART1 ringbuffer */
@@ -372,6 +381,8 @@ extern void uart1_flush(void);
 
 /** @brief  Initialize USART2 (only available on selected ATmegas) @see uart_init */
 extern void uart2_init(uint16_t baudrate);
+/** @brief  Set UART2 additional rx interrupt handler @see uart_setRxHandler */
+extern void uart2_setRxHandler(void (*func)(uint8_t data, uint8_t lastRxError));
 /** @brief  Get received byte of USART2 from ringbuffer. (only available on selected ATmega) @see uart_getc */
 extern uint16_t uart2_getc(void);
 /** @brief  Peek at next byte in USART2 ringbuffer */
@@ -392,6 +403,8 @@ extern void uart2_flush(void);
 
 /** @brief  Initialize USART3 (only available on selected ATmegas) @see uart_init */
 extern void uart3_init(uint16_t baudrate);
+/** @brief  Set UART3 additional rx interrupt handler @see uart_setRxHandler */
+extern void uart3_setRxHandler(void (*func)(uint8_t data, uint8_t lastRxError));
 /** @brief  Get received byte of USART3 from ringbuffer. (only available on selected ATmega) @see uart_getc */
 extern uint16_t uart3_getc(void);
 /** @brief  Peek at next byte in USART3 ringbuffer */
@@ -411,5 +424,4 @@ extern void uart3_flush(void);
 
 /**@}*/
 
-#endif // UART_H 
-
+#endif // UART_H

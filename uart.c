@@ -195,7 +195,7 @@ Date        Description
 	#define UART0_TRANSMIT_INTERRUPT  UART_UDRE_vect
 	#define UART0_STATUS   USR
 	#define UART0_CONTROL  UCR
-	#define UART0_DATA     UDR  
+	#define UART0_DATA     UDR
 	#define UART0_UDRIE    UDRIE
 #elif defined(__AVR_AT90S2333__) || defined(__AVR_AT90S4433__)
 	/* old AVR classic with one UART */
@@ -204,7 +204,7 @@ Date        Description
 	#define UART0_TRANSMIT_INTERRUPT  UART_UDRE_vect
 	#define UART0_STATUS   UCSRA
 	#define UART0_CONTROL  UCSRB
-	#define UART0_DATA     UDR 
+	#define UART0_DATA     UDR
 	#define UART0_UDRIE    UDRIE
 #elif  defined(__AVR_ATmega8__)  || defined(__AVR_ATmega16__) || defined(__AVR_ATmega32__) \
   || defined(__AVR_ATmega323__)
@@ -235,7 +235,7 @@ Date        Description
 	#define UART0_CONTROL  UCSRB
 	#define UART0_DATA     UDR
 	#define UART0_UDRIE    UDRIE
-#elif defined(__AVR_ATmega163__) 
+#elif defined(__AVR_ATmega163__)
 	/* ATmega163 with one UART */
 	#define ATMEGA_UART
 	#define UART0_RECEIVE_INTERRUPT   UART_RX_vect
@@ -244,7 +244,7 @@ Date        Description
 	#define UART0_CONTROL  UCSRB
 	#define UART0_DATA     UDR
 	#define UART0_UDRIE    UDRIE
-#elif defined(__AVR_ATmega162__) 
+#elif defined(__AVR_ATmega162__)
 	/* ATmega with two USART */
 	#define ATMEGA_USART0
 	#define ATMEGA_USART1
@@ -260,7 +260,7 @@ Date        Description
 	#define UART1_CONTROL  UCSR1B
 	#define UART1_DATA     UDR1
 	#define UART1_UDRIE    UDRIE1
-#elif defined(__AVR_ATmega64__) || defined(__AVR_ATmega128__) 
+#elif defined(__AVR_ATmega64__) || defined(__AVR_ATmega128__)
 	/* ATmega with two USART */
 	#define ATMEGA_USART0
 	#define ATMEGA_USART1
@@ -279,7 +279,7 @@ Date        Description
 #elif defined(__AVR_ATmega161__)
 	/* ATmega with UART */
 	#error "AVR ATmega161 currently not supported by this libaray !"
-#elif defined(__AVR_ATmega169__) 
+#elif defined(__AVR_ATmega169__)
 	/* ATmega with one USART */
 	#define ATMEGA_USART
 	#define UART0_RECEIVE_INTERRUPT   USART0_RX_vect
@@ -290,7 +290,7 @@ Date        Description
 	#define UART0_UDRIE    UDRIE
 #elif defined(__AVR_ATmega48__) ||defined(__AVR_ATmega88__) || defined(__AVR_ATmega168__) || \
       defined(__AVR_ATmega48P__) ||defined(__AVR_ATmega88P__) || defined(__AVR_ATmega168P__) || \
-      defined(__AVR_ATmega328P__) 
+      defined(__AVR_ATmega328P__)
 	/* TLS-Added 48P/88P/168P/328P */
 	/* ATmega with one USART */
 	#define ATMEGA_USART0
@@ -302,7 +302,7 @@ Date        Description
 	#define UART0_UDRIE    UDRIE0
 #elif defined(__AVR_ATtiny2313__) || defined(__AVR_ATtiny2313A__) || defined(__AVR_ATtiny4313__)
 	#define ATMEGA_USART
-	#define UART0_RECEIVE_INTERRUPT   USART_RX_vect 
+	#define UART0_RECEIVE_INTERRUPT   USART_RX_vect
 	#define UART0_TRANSMIT_INTERRUPT  USART_UDRE_vect
 	#define UART0_STATUS   UCSRA
 	#define UART0_CONTROL  UCSRB
@@ -352,15 +352,15 @@ Date        Description
 	#define UART1_STATUS   UCSR1A
 	#define UART1_CONTROL  UCSR1B
 	#define UART1_DATA     UDR1
-	#define UART1_UDRIE    UDRIE1  
+	#define UART1_UDRIE    UDRIE1
 	#define UART2_STATUS   UCSR2A
 	#define UART2_CONTROL  UCSR2B
 	#define UART2_DATA     UDR2
-	#define UART2_UDRIE    UDRIE2  
+	#define UART2_UDRIE    UDRIE2
 	#define UART3_STATUS   UCSR3A
 	#define UART3_CONTROL  UCSR3B
 	#define UART3_DATA     UDR3
-	#define UART3_UDRIE    UDRIE3  
+	#define UART3_UDRIE    UDRIE3
 #elif defined(__AVR_ATmega644__)
 	/* ATmega with one USART */
 	#define ATMEGA_USART0
@@ -399,7 +399,8 @@ Date        Description
 	#if defined( ATMEGA_USART ) || defined( ATMEGA_USART0 )
 		static volatile uint8_t UART_TxBuf[UART_TX0_BUFFER_SIZE];
 		static volatile uint8_t UART_RxBuf[UART_RX0_BUFFER_SIZE];
-		
+		static void (*UART_AdditionalRxHandler)(uint8_t data, uint8_t lastRxError);
+
 		#if defined( USART0_LARGE_BUFFER )
 			static volatile uint16_t UART_TxHead;
 			static volatile uint16_t UART_TxTail;
@@ -413,7 +414,6 @@ Date        Description
 			static volatile uint8_t UART_RxTail;
 			static volatile uint8_t UART_LastRxError;
 		#endif
-		
 	#endif
 #endif
 
@@ -421,7 +421,8 @@ Date        Description
 	#if defined( ATMEGA_USART1 )
 		static volatile uint8_t UART1_TxBuf[UART_TX1_BUFFER_SIZE];
 		static volatile uint8_t UART1_RxBuf[UART_RX1_BUFFER_SIZE];
-		
+		static void (*UART1_AdditionalRxHandler)(uint8_t data, uint8_t lastRxError);
+
 		#if defined( USART1_LARGE_BUFFER )
 			static volatile uint16_t UART1_TxHead;
 			static volatile uint16_t UART1_TxTail;
@@ -434,7 +435,7 @@ Date        Description
 			static volatile uint8_t UART1_RxHead;
 			static volatile uint8_t UART1_RxTail;
 			static volatile uint8_t UART1_LastRxError;
-		#endif		
+		#endif
 	#endif
 #endif
 
@@ -442,6 +443,7 @@ Date        Description
 	#if defined( ATMEGA_USART2 )
 		static volatile uint8_t UART2_TxBuf[UART_TX2_BUFFER_SIZE];
 		static volatile uint8_t UART2_RxBuf[UART_RX2_BUFFER_SIZE];
+		static void (*UART2_AdditionalRxHandler)(uint8_t data, uint8_t lastRxError);
 
 		#if defined( USART2_LARGE_BUFFER )
 			static volatile uint16_t UART2_TxHead;
@@ -455,7 +457,7 @@ Date        Description
 			static volatile uint8_t UART2_RxHead;
 			static volatile uint8_t UART2_RxTail;
 			static volatile uint8_t UART2_LastRxError;
-		#endif		
+		#endif
 	#endif
 #endif
 
@@ -463,6 +465,7 @@ Date        Description
 	#if defined( ATMEGA_USART3 )
 		static volatile uint8_t UART3_TxBuf[UART_TX3_BUFFER_SIZE];
 		static volatile uint8_t UART3_RxBuf[UART_RX3_BUFFER_SIZE];
+		static void (*UART3_AdditionalRxHandler)(uint8_t data, uint8_t lastRxError);
 
 		#if defined( USART3_LARGE_BUFFER )
 			static volatile uint16_t UART3_TxHead;
@@ -477,7 +480,6 @@ Date        Description
 			static volatile uint8_t UART3_RxTail;
 			static volatile uint8_t UART3_LastRxError;
 		#endif
-
 	#endif
 #endif
 
@@ -493,11 +495,11 @@ Purpose:  called when the UART has received a character
     uint8_t data;
     uint8_t usr;
     uint8_t lastRxError;
- 
-    /* read UART status register and UART data register */ 
+
+    /* read UART status register and UART data register */
     usr  = UART0_STATUS;
     data = UART0_DATA;
-    
+
     /* */
 #if defined( AT90_UART )
     lastRxError = (usr & (_BV(FE)|_BV(DOR)) );
@@ -508,10 +510,10 @@ Purpose:  called when the UART has received a character
 #elif defined ( ATMEGA_UART )
     lastRxError = (usr & (_BV(FE)|_BV(DOR)) );
 #endif
-        
-    /* calculate buffer index */ 
+
+    /* calculate buffer index */
     tmphead = ( UART_RxHead + 1) & UART_RX0_BUFFER_MASK;
-    
+
     if ( tmphead == UART_RxTail ) {
         /* error: receive buffer overflow */
         lastRxError = UART_BUFFER_OVERFLOW >> 8;
@@ -521,7 +523,11 @@ Purpose:  called when the UART has received a character
         /* store received data in buffer */
         UART_RxBuf[tmphead] = data;
     }
-    UART_LastRxError = lastRxError;   
+    UART_LastRxError = lastRxError;
+
+	if (UART_AdditionalRxHandler != NULL) {
+		(*UART_AdditionalRxHandler)(data, lastRxError);
+	}
 }
 
 
@@ -617,8 +623,18 @@ void uart0_init(uint16_t baudrate)
 	UART0_CONTROL = _BV(RXCIE)|(1<<RXEN)|(1<<TXEN);
 
 #endif
-
+	UART_AdditionalRxHandler = NULL;
 } /* uart0_init */
+
+/*************************************************************************
+Function: uart0_setRxHandler()
+Purpose:  Set additional interrupt handler function
+Param:    handler function
+Returns:  none
+*************************************************************************/
+void uart0_setRxHandler(void (*func)(uint8_t data, uint8_t lastRxError)) {
+	UART_AdditionalRxHandler = func;
+}
 
 
 /*************************************************************************
@@ -794,6 +810,10 @@ Purpose:  called when the UART1 has received a character
 		UART1_RxBuf[tmphead] = data;
 	}
 	UART1_LastRxError = lastRxError;
+
+	if (UART1_AdditionalRxHandler != NULL) {
+		(*UART1_AdditionalRxHandler)(data, lastRxError);
+	}
 }
 
 
@@ -848,8 +868,18 @@ void uart1_init(uint16_t baudrate)
 #else
 	UCSR1C = (3<<UCSZ10);
 #endif
+	UART1_AdditionalRxHandler = NULL;
 } /* uart_init */
 
+/*************************************************************************
+Function: uart1_setRxHandler()
+Purpose:  Set additional interrupt handler function
+Param:    handler function
+Returns:  none
+*************************************************************************/
+void uart1_setRxHandler(void (*func)(uint8_t data, uint8_t lastRxError)) {
+	UART1_AdditionalRxHandler = func;
+}
 
 /*************************************************************************
 Function: uart1_getc()
@@ -1029,6 +1059,10 @@ Purpose:  called when the UART2 has received a character
 		UART2_RxBuf[tmphead] = data;
 	}
 	UART2_LastRxError = lastRxError;
+
+	if (UART2_AdditionalRxHandler != NULL) {
+		(*UART2_AdditionalRxHandler)(data, lastRxError);
+	}
 }
 
 
@@ -1085,8 +1119,18 @@ void uart2_init(uint16_t baudrate)
 #else
 	UCSR2C = (3<<UCSZ20);
 #endif
+	UART2_AdditionalRxHandler = NULL;
 } /* uart_init */
 
+/*************************************************************************
+Function: uart2_setRxHandler()
+Purpose:  Set additional interrupt handler function
+Param:    handler function
+Returns:  none
+*************************************************************************/
+void uart2_setRxHandler(void (*func)(uint8_t data, uint8_t lastRxError)) {
+	UART2_AdditionalRxHandler = func;
+}
 
 /*************************************************************************
 Function: uart2_getc()
@@ -1289,6 +1333,10 @@ Purpose:  called when the UART3 is ready to transmit the next byte
 		/* tx buffer empty, disable UDRE interrupt */
 		UART3_CONTROL &= ~_BV(UART3_UDRIE);
 	}
+
+	if (UART3_AdditionalRxHandler != NULL) {
+		(*UART3_AdditionalRxHandler)(data, lastRxError);
+	}
 }
 
 
@@ -1322,8 +1370,18 @@ void uart3_init(uint16_t baudrate)
 #else
 	UCSR3C = (3<<UCSZ30);
 #endif
+	UART3_AdditionalRxHandler = NULL;
 } /* uart_init */
 
+/*************************************************************************
+Function: uart3_setRxHandler()
+Purpose:  Set additional interrupt handler function
+Param:    handler function
+Returns:  none
+*************************************************************************/
+void uart3_setRxHandler(void (*func)(uint8_t data, uint8_t lastRxError)) {
+	UART3_AdditionalRxHandler = func;
+}
 
 /*************************************************************************
 Function: uart3_getc()
