@@ -4,15 +4,28 @@
 
 /************************************************************************
 Title:    Interrupt UART library with receive/transmit circular buffers
-Author:   Andy Gock
+Author:	  FlechaMaker
 Software: AVR-GCC 4.1, AVR Libc 1.4
-Hardware: any AVR with built-in UART, tested on AT90S8515 & ATmega8 at 4 Mhz
+Hardware: any AVR with built-in UART, tested on ATmega328 & ATmega164 at 8 Mhz
 License:  GNU General Public License
-Usage:    see Doxygen manual
 
-Based on original library by Peter Fluery, Tim Sharpe, Nicholas Zambetti.
+Based on original library by Peter Fluery, Tim Sharpe, Nicholas Zambetti,
+ Andy Gock.
 
-https://github.com/andygock/avr-uart
+https://github.com/FlechaMaker/avr-uart
+
+LICENSE:
+	Copyright (C) 2015 FlechaMaker
+
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
 LICENSE:
 	Copyright (C) 2012 Andy Gock
