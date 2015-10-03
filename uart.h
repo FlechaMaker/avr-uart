@@ -243,7 +243,7 @@ Date        Description
 #define uart_puts(s)      uart0_puts(s)
 #define uart_puts_p(s)    uart0_puts_p(s)
 #define uart_available()  uart0_available()
-#define uart_flush()      uart0_flush()
+#define uart_flush(n)      uart0_flush(n)
 
 /*
 ** function prototypes
@@ -366,8 +366,9 @@ extern uint16_t uart0_available(void);
 
 /**
  *  @brief   Flush bytes waiting in receive buffer
+ *  \param    n number of byte to flush
  */
-extern void uart0_flush(void);
+extern void uart0_flush(uint16_t n);
 
 
 /** @brief  Initialize USART1 (only available on selected ATmegas) @see uart_init */
@@ -389,7 +390,7 @@ extern void uart1_puts_p(const char *s );
 /** @brief   Return number of bytes waiting in the receive buffer */
 extern uint16_t uart1_available(void);
 /** @brief   Flush bytes waiting in receive buffer */
-extern void uart1_flush(void);
+extern void uart1_flush(uint16_t n);
 
 
 /** @brief  Initialize USART2 (only available on selected ATmegas) @see uart_init */
@@ -411,7 +412,7 @@ extern void uart2_puts_p(const char *s );
 /** @brief   Return number of bytes waiting in the receive buffer */
 extern uint16_t uart2_available(void);
 /** @brief   Flush bytes waiting in receive buffer */
-extern void uart2_flush(void);
+extern void uart2_flush(uint16_t n);
 
 
 /** @brief  Initialize USART3 (only available on selected ATmegas) @see uart_init */
@@ -433,7 +434,7 @@ extern void uart3_puts_p(const char *s );
 /** @brief   Return number of bytes waiting in the receive buffer */
 extern uint16_t uart3_available(void);
 /** @brief   Flush bytes waiting in receive buffer */
-extern void uart3_flush(void);
+extern void uart3_flush(uint16_t n);
 
 /**@}*/
 

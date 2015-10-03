@@ -779,12 +779,17 @@ uint16_t uart0_available(void)
 /*************************************************************************
 Function: uart0_flush()
 Purpose:  Flush bytes waiting the receive buffer.  Acutally ignores them.
-Input:    None
+Input:    0   - flush all
+		  n>0 - flush n bytes
 Returns:  None
 **************************************************************************/
-void uart0_flush(void)
+void uart0_flush(uint16_t n)
 {
-	UART_RxHead = UART_RxTail;
+	if (n == 0 || uart0_available() <= n) {
+		UART_RxHead = UART_RxTail;
+	} else {
+		UART_RxTail = (UART_RxTail + n) & UART_RX0_BUFFER_MASK;
+	}
 } /* uart0_flush */
 
 #endif
@@ -1025,12 +1030,17 @@ uint16_t uart1_available(void)
 /*************************************************************************
 Function: uart1_flush()
 Purpose:  Flush bytes waiting the receive buffer.  Acutally ignores them.
-Input:    None
+Input:    0   - flush all
+		  n>0 - flush n bytes
 Returns:  None
 **************************************************************************/
-void uart1_flush(void)
+void uart1_flush(uint16_t n)
 {
-	UART1_RxHead = UART1_RxTail;
+	if (n == 0 || uart1_available() <= n) {
+		UART1_RxHead = UART1_RxTail;
+	} else {
+		UART1_RxTail = (UART1_RxTail + n) & UART_RX1_BUFFER_MASK;
+	}
 } /* uart1_flush */
 
 #endif
@@ -1277,12 +1287,17 @@ uint16_t uart2_available(void)
 /*************************************************************************
 Function: uart2_flush()
 Purpose:  Flush bytes waiting the receive buffer.  Acutally ignores them.
-Input:    None
+Input:    0   - flush all
+		  n>0 - flush n bytes
 Returns:  None
 **************************************************************************/
-void uart2_flush(void)
+void uart2_flush(uint16_t n)
 {
-	UART2_RxHead = UART2_RxTail;
+	if (n == 0 || uart2_available() <= n) {
+		UART2_RxHead = UART2_RxTail;
+	} else {
+		UART2_RxTail = (UART2_RxTail + n) & UART_RX2_BUFFER_MASK;
+	}
 } /* uart2_flush */
 
 #endif
@@ -1528,12 +1543,17 @@ uint16_t uart3_available(void)
 /*************************************************************************
 Function: uart3_flush()
 Purpose:  Flush bytes waiting the receive buffer.  Acutally ignores them.
-Input:    None
+Input:    0   - flush all
+		  n>0 - flush n bytes
 Returns:  None
 **************************************************************************/
-void uart3_flush(void)
+void uart3_flush(uint16_t n)
 {
-	UART3_RxHead = UART3_RxTail;
+	if (n == 0 || uart3_available() <= n) {
+		UART3_RxHead = UART3_RxTail;
+	} else {
+		UART3_RxTail = (UART3_RxTail + n) & UART_RX3_BUFFER_MASK;
+	}
 } /* uart3_flush */
 
 #endif
